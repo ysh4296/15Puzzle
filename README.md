@@ -17,5 +17,5 @@
 
 
 # Solve Puzzle!
-[Solve_Puzzle](https://user-images.githubusercontent.com/29995264/124348549-7f258c80-dc25-11eb-98bc-94fb33ed0b9d.gif)
+![Solve_Puzzle](https://user-images.githubusercontent.com/29995264/124348549-7f258c80-dc25-11eb-98bc-94fb33ed0b9d.gif)
 - 섞여진 퍼즐을 풀이합니다.
