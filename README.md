@@ -1,4 +1,8 @@
-# chatserver_with_winsock
-# chatserver_with_winsock
-# chatserver_with_winsock
-# chatserver_with_winsock
+# 15-Puzzle
+--------------------------
+- 15개의 퍼즐조각과 1개의 빈칸으로 이루어진 퍼즐입니다.
+- 본 프로젝트에서는 15퍼즐의 구성과 퍼즐의 Random한 뒤섞기 그리고 퍼즐 자동 풀이 등을 구현하였습니다.
+- java swing을 이용해 gui를 구성하였고 직접 퍼즐조각을 제작하여 퍼즐을 만들었습니다
+
+#알고리즘
+--------------------------
