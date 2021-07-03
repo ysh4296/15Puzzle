@@ -3,8 +3,6 @@ import java.util.*;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.Timer;
-
-import java.applet.Applet;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
@@ -148,7 +146,7 @@ class Main {
 	        Board_MAP.setBounds(50,50,800,800);
 	        Board_MAP.setLayout(null);
 	        Board_MAP.setBackground(new Color(120,0,120));
-	        
+	        //setting the initial tile status
 	        for(int i = 0 ; i  < N ; i++) {
 	        	for(int j = 0 ; j < N ; j++) {
 	        		if(Dest.Map[i][j] == 0) continue;
@@ -159,13 +157,13 @@ class Main {
 	    	        Board_MAP.add(comp[((Dest.Map[i][j]-1)/N)*N+((Dest.Map[i][j]-1)%N)+1]);
 	        	}
 	        }
-	        JPanel p1 = new JPanel();
+	        JPanel p1 = new JPanel();//panel for input num of random moves
 	        p1.add(new JLabel("Num of Move"));
 	        JTextField num = new JTextField(10);
 	        p1.add(num);
 	        p1.setBounds(100,900,200,200);
-	        Random_Move = new JButton("Random Move!");
-	        Solve_Puzzle = new JButton("Solve Puzzle");
+	        Random_Move = new JButton("Random Move!");//add button for random move
+	        Solve_Puzzle = new JButton("Solve Puzzle");//add button for solve puzzle
 	        Solve_Puzzle.setBounds(600,900,150,50);
 	        Random_Move.setBounds(350,900,150,50);
 	        Random_Move.addActionListener(new ActionListener() {
@@ -201,7 +199,6 @@ class Main {
 					}
 				}
 	        });
-	        //p1.add(Random_Move);
 	        Frame.getContentPane().add(p1);
 	        Frame.getContentPane().add(Random_Move);
 	        Frame.getContentPane().add(Solve_Puzzle);
@@ -216,25 +213,25 @@ class Main {
 	            private int increment = 20;
 	            @Override
 	            public synchronized void actionPerformed(ActionEvent e) {
-	            	if(num_of_move == n) {
+	            	if(num_of_move == n) {//end of moving
 						Random_Move.setEnabled(true);
 						Solve_Puzzle.setEnabled(true);
         				moveTimer.stop();
 	            	} else {
-	            		if (count == 0) {
+	            		if (count == 0) {//do next step
 		    				dir = random.nextInt(4);
 		    				do {
 		    					dir = random.nextInt(4);
-		    				} while(!Valid_move(Dest.zr,Dest.zc,dir) || prev_dir == dir);
+		    				} while(!Valid_move(Dest.zr,Dest.zc,dir) || prev_dir == dir);//random moves should valid move && don't go back
 		    				prev_dir = (dir+2)%4;
 	            		}
-		                if (count == 200) {
+		                if (count == 200) {//the end of one step
 		                	count = 0;
 	        	        	Puzzle temp = new Puzzle();
 	        	        	temp.Get_Puzzle(Dest, dir);
 	        	        	Dest = temp;
 		                    num_of_move++;
-		                } else {
+		                } else {//moving
 			                Point loc = comp[Dest.Map[Dest.zr + nr[dir]][Dest.zc + nc[dir]]].getLocation();// the point for moving block
 			                loc.x += nc[(dir+2)%4]*increment;
 			                loc.y += nr[(dir+2)%4]*increment;
@@ -246,19 +243,20 @@ class Main {
 	        });
 	        moveTimer.start();
 		}
-		private static void Solve() {
+		private static void Solve() {//solve puzzle with adjusted A* algorithm
 			PriorityQueue<Puzzle> O = new PriorityQueue<Puzzle>();
 		    Vector<Puzzle> C = new Vector<Puzzle>();
 		    Stack<Puzzle> Answer = new Stack<Puzzle>();
-			if(!Dest.Init_Puzzle()) {
+			if(!Dest.Init_Puzzle()) {//it find invalid puzzle but every puzzle made from random move is valid puzzle 
 	        	System.out.println("invalid Puzzle");
 	        	return;
 	        } else {
+	        	//adjustedA* algorithm
 		        O.offer(Dest);
 		        C.add(Dest);
 		        while(true) {
 		        	Puzzle cur = O.poll();
-		        	if(cur.H == 0) {
+		        	if(cur.H == 0) {//found the path for cur -> answer
 		        		while(true) {
 		        			if(cur.parent == -1) break;
 		        			Answer.add(cur);
@@ -284,7 +282,8 @@ class Main {
 			        	}
 		        	}
 		        }
-		        // answer vector is made
+		        
+		        // answer stack is made
 				moveTimer = new Timer(15, new ActionListener() {
 			        private int n = (int)Answer.size();
 					private int num_of_move = 0;
@@ -295,21 +294,21 @@ class Main {
 		            private Puzzle next;
 		            @Override
 		            public synchronized void actionPerformed(ActionEvent e) {
-		            	if(num_of_move == n) {
+		            	if(num_of_move == n) {//moving end
 							Random_Move.setEnabled(true);
 							Solve_Puzzle.setEnabled(true);
 	        				moveTimer.stop();
 		            	} else {
-		            		if (count == 0) {
+		            		if (count == 0) {//do next step
 			    				next = Answer.pop();
 		            			dirx = Dest.zc - next.zc;
 			    				diry = Dest.zr - next.zr;
 		            		}
-			                if (count == 200) {
+			                if (count == 200) {//end of cur step
 			                	count = 0;
 			                	Dest = next;
 			                    num_of_move++;
-			                } else {
+			                } else {//moving
 				                Point loc = comp[Dest.Map[Dest.zr - diry][Dest.zc - dirx]].getLocation();// the point for moving block
 				                loc.x += dirx*increment;
 				                loc.y += diry*increment;
@@ -323,13 +322,13 @@ class Main {
 	        }
 		}
 	}
-	public static boolean Valid_move(int r,int c,int dir){
+	public static boolean Valid_move(int r,int c,int dir){// if the move is valid return true
 	    if(nr[dir] + r >= 0 && nr[dir] + r < N && nc[dir] + c >= 0 && nc[dir] + c < N){
 	        return true;
 	    }
 	    return false;
 	}
-	public static void main (String[] args) throws java.lang.Exception {
+	public static void main (String[] args) throws java.lang.Exception {//main
 		new Gamer();
 	}
 }
